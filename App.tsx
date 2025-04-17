@@ -4,8 +4,9 @@ import {
   useFonts
 } from '@expo-google-fonts/roboto';
 import { Center, GluestackUIProvider, Text } from '@gluestack-ui/themed';
-import { StatusBar, View } from 'react-native';
+import { StatusBar } from 'react-native';
 
+import { Loading } from '@components/Loading';
 import { config } from './config/gluestack-ui.config';
 
 export default function App() {
@@ -15,20 +16,22 @@ export default function App() {
   })
   return (
     <GluestackUIProvider config={config}>
-      {fontsLoaded ? (
-        <Center flex={1} bg='$gray500' >
-          <Text fontFamily='$heading' fontSize={'$3xl'} color='$gray100'>
-              Home
-          </Text> 
-        </Center>
-      ) : ( 
-        <View />
-      )}
       <StatusBar 
         barStyle={'light-content'} 
         backgroundColor={'transparent'}
         translucent
       />
+      
+      {fontsLoaded ? (
+        <Center flex={1} bg='$gray700' >
+          <Text fontFamily='$heading' fontSize={'$3xl'} color='$gray100'>
+              Home
+          </Text> 
+        </Center>
+      ) : ( 
+        <Loading />
+      )}
+
     </GluestackUIProvider>
   );
 }
