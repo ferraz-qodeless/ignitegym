@@ -1,5 +1,5 @@
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -8,7 +8,15 @@ export default function App() {
   })
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Home</Text>
+      {fontsLoaded 
+        ? <Text style={styles.text}>Home</Text> 
+        : <View />
+      }
+      <StatusBar 
+        barStyle={'light-content'} 
+        backgroundColor={'transparent'}
+        translucent
+      />
     </View>
   );
 }
@@ -16,7 +24,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#202024',
     alignItems: 'center',
     justifyContent: 'center',
   },
