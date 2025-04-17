@@ -1,36 +1,40 @@
-import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import {
+  Roboto_400Regular,
+  Roboto_700Bold,
+  useFonts
+} from '@expo-google-fonts/roboto';
+import { Center, GluestackUIProvider, Text } from '@gluestack-ui/themed';
+import { StatusBar } from 'react-native';
+
+import { Loading } from '@components/Loading';
+import { config } from './config/gluestack-ui.config';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    Roboto_400Regular,
-    Roboto_700Bold
+    Roboto_700Bold,
+    Roboto_400Regular
   })
   return (
-    <View style={styles.container}>
-      {fontsLoaded 
-        ? <Text style={styles.text}>Home</Text> 
-        : <View />
-      }
+    <GluestackUIProvider config={config}>
       <StatusBar 
         barStyle={'light-content'} 
         backgroundColor={'transparent'}
         translucent
       />
-    </View>
+      
+      {fontsLoaded ? (
+        <Center flex={1} bg='$gray700' >
+          <Text fontFamily='$heading' fontSize={'$3xl'} color='$gray100'>
+              Home
+          </Text> 
+        </Center>
+      ) : ( 
+        <Loading />
+      )}
+
+    </GluestackUIProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#202024',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    fontFamily: 'Roboto_700Bold',
-    fontSize: 36,
-    color: '#b0b0b0'
-  }
-});
+
+
