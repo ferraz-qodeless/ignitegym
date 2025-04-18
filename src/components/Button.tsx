@@ -3,20 +3,22 @@ import { ComponentProps } from "react";
 
 type Props = ComponentProps<typeof GluestackButton> & {
   title: string;
+  variant?: "solid" | "outline";
   isLoading?: boolean;
 }
 
-export function Button({title, isLoading, ...rest }: Props) {
+export function Button({title, variant = "solid", isLoading, ...rest }: Props) {
   return (
     <GluestackButton
       w="$full"
       h="$14"
-      bg="$green700"
-      borderWidth="$0"
+      bg={variant === "outline" ? "transparent" : "$green700"}
+      borderWidth={variant === "outline" ? "$1" : "$0"}
+      borderColor="$green500"
       rounded="$md"
       disabled={isLoading}
       $active={{
-        bg: "$green500"
+        bg: variant === "outline" ? "$gray500" : "$green500"
       }}
       {...rest}
     >
@@ -24,7 +26,7 @@ export function Button({title, isLoading, ...rest }: Props) {
         <ButtonSpinner color="$white" />
         ) : (
         <Text
-          color="$white"
+          color={variant === "outline" ? "$green500" : "$white"}
           fontFamily="$heading"
           fontSize="$sm"
         >
