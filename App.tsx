@@ -23,10 +23,8 @@ export function App() {
         backgroundColor={'transparent'}
         translucent
       />
-      
       {fontsLoaded ? <Routes /> : <Loading />
-  }
-
+    }
     </GluestackUIProvider>
   );
 }
