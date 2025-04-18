@@ -34,6 +34,13 @@ export function SignIn() {
           <Input placeholder="Senha" secureTextEntry/>
           <Button title="Acessar"/>
         </Center>
+
+        <Center flex={1} justifyContent="flex-end">
+          <Text color="$gray100" fontSize="$sm" mb="$2" fontFamily="$body">
+            Ainda não tem acesso?
+          </Text>
+        <Button title="Criar conta" variant="outline"/>
+        </Center>
       </VStack>
 
     </VStack>
