@@ -29,8 +29,8 @@ export function SignIn() {
           <Heading color="$gray100" textAlign="center">
             Acesse sua conta
           </Heading>
-          <Input placeholder="E-mail" />
-          <Input placeholder="Senha" />
+          <Input placeholder="E-mail" keyboardType="email-address" autoCapitalize="none"/>
+          <Input placeholder="Senha" secureTextEntry/>
         </Center>
       </VStack>
 
