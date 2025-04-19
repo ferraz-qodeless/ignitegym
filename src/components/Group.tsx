@@ -9,6 +9,7 @@ type Props = ComponentProps<typeof Button> & {
 export function Group({ name, isActive, ...props }: Props) {
   return (
     <Button
+      mr={"$4"}
       minWidth="$24"
       h="$10"
       bg="$gray600"
