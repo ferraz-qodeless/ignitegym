@@ -3,11 +3,11 @@ import { TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
 import { ChevronRight } from 'lucide-react-native';
 
-type ExeciseCardProps = TouchableOpacityProps & {
+type ExerciseCardProps = TouchableOpacityProps & {
   name: string
 }
 
-export function ExeciseCard({ ...props }: ExeciseCardProps) {
+export function ExerciseCard({ ...props }: ExerciseCardProps) {
   return (
     <TouchableOpacity {...props}>
       <HStack bg='$gray500' alignItems='center' p='$2' pr={"$4"} mb={'$3'} rounded={'md'}>
