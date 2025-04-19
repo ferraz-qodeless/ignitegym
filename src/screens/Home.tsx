@@ -1,4 +1,4 @@
-import { VStack } from "@gluestack-ui/themed";
+import { Heading, HStack, Text, VStack } from "@gluestack-ui/themed";
 import { useState } from 'react';
 import { FlatList } from 'react-native';
 
@@ -26,6 +26,16 @@ export function Home() {
         contentContainerStyle={{ paddingHorizontal: 32 }}
         style={{ marginVertical: 40, maxHeight: 44, minWidth: 44 }}
       />
+      <VStack px={"$8"}>
+        <HStack justifyContent="space-between" mb={"$5"} alignItems="center">
+          <Heading color="$gray200" fontSize="$md" fontFamily="$heading">
+            Exercícios
+          </Heading>
+          <Text color="$gray200" fontSize="$sm" fontFamily="$body">
+            {groups.length}
+          </Text>
+        </HStack>
+      </VStack>
     </VStack>
   );
 }
