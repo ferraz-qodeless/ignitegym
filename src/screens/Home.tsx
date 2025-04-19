@@ -2,6 +2,7 @@ import { Heading, HStack, Text, VStack } from "@gluestack-ui/themed";
 import { useState } from 'react';
 import { FlatList } from 'react-native';
 
+import { ExeciseCard } from "@components/ExerciseCard";
 import { Group } from '@components/Group';
 import { HomeHeader } from "@components/HomeHeader";
 
@@ -35,6 +36,7 @@ export function Home() {
             {groups.length}
           </Text>
         </HStack>
+        <ExeciseCard name="Puxada frontal"/>
       </VStack>
     </VStack>
   );
