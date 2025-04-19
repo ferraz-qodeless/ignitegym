@@ -16,7 +16,7 @@ export function Home() {
     'Extens o do tornozelo',
   ])
   const [groups, setGroups] = useState(['Costas', 'Bíceps', 'Tríceps', 'Ombro'])
-  const [groupSelected, setGroupSelected] = useState('costas')
+  const [groupSelected, setGroupSelected] = useState(groups[0])
   return (
     <VStack flex={1}>
       <HomeHeader />
@@ -26,7 +26,7 @@ export function Home() {
         renderItem={({ item }) => (
           <Group
             name={item}
-            isActive={groupSelected === item}
+            isActive={groupSelected.toLocaleUpperCase() === item.toLocaleUpperCase()}
             onPress={() => setGroupSelected(item)}
           />
         )}
