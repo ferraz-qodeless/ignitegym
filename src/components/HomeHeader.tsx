@@ -2,7 +2,6 @@ import { HStack, Icon, Text, VStack } from "@gluestack-ui/themed";
 import { LogOut } from "lucide-react-native";
 import { UserPhoto } from "./UserPhoto";
 
-
 export function HomeHeader() {
   return (
     <HStack bg="$gray600" pt="$16" pb="$5" px="$8" alignItems="center" gap='$4'>
