@@ -19,7 +19,8 @@ export function History() {
             color="$green500"
             fontSize="$md"
             mt="$10"
-            mb="$3"
+            mb="$0.5"
+            ml={"$3"}
           >
             {section.title}
           </Heading>  
@@ -34,6 +35,8 @@ export function History() {
             Vamos fazer exercícios hoje?
           </Text>
         )}
+        showsVerticalScrollIndicator={false}
+        stickySectionHeadersEnabled={false}
       />
     </VStack>
   );
