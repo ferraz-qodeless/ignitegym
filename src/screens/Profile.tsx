@@ -3,14 +3,15 @@ import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { ToastMessage } from '@components/ToastMessage'
 import { UserPhoto } from '@components/UserPhoto'
-import { Center, Heading, Text, VStack } from '@gluestack-ui/themed'
+import { Center, Heading, Text, useToast, VStack } from '@gluestack-ui/themed'
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
-import { Alert, ScrollView, TouchableOpacity } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 
 export function Profile() {
   const [userPhoto, setUserPhoto] = useState<string>('')
+  const toast = useToast()
   async function handleUserPhotoSelect() {
     const photoSelected = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -30,26 +31,39 @@ export function Profile() {
         size: number
       }
 
-      if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
-        return Alert.alert(
-          'Essa imagem é muito grande. Escolha uma imagem menor',
-        )
+      if (photoInfo.size && photoInfo.size / 1024 / 1024 > 0.001) {
+        return toast.show({
+          placement: 'top',
+          render: ({id}) => (
+            <ToastMessage 
+              id={id}
+              title="Imagem muito grande"
+              description="Escolha uma imagem com no máximo 5MB"
+              action="error" 
+              onClose={() => toast.close(id)}
+            />
+          )
+        })
       }
       
+      toast.show({
+        placement: 'top',
+        render: ({id}) => (
+          <ToastMessage 
+            id={id}
+            title="Imagem carregada"
+            description="Sua foto foi carregada com sucesso"
+            action="success" 
+            onClose={() => toast.close(id)}
+          />
+        )
+      })
       setUserPhoto(photoUri)
     }
-    
   }
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
-
-      <ToastMessage 
-        id="1"
-        title="Foto alterada com sucesso!"
-        description="Suas alterações foram salvas."
-        action="success" onClose={() => {}}
-      />
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
           <UserPhoto
