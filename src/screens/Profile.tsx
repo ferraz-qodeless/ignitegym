@@ -3,10 +3,13 @@ import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
 import { UserPhoto } from '@components/UserPhoto'
 import { Center, Heading, Text, VStack } from '@gluestack-ui/themed'
+import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { useState } from 'react'
+import { Alert, ScrollView, TouchableOpacity } from 'react-native'
 
 export function Profile() {
+  const [userPhoto, setUserPhoto] = useState<string>('')
   async function handleUserPhotoSelect() {
     const photoSelected = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -14,6 +17,27 @@ export function Profile() {
       aspect: [4, 4],
       allowsEditing: true,
     })
+    
+    if (photoSelected.canceled) {
+      return
+    }
+
+    const photoUri = photoSelected.assets[0].uri
+
+    if (photoUri) {
+      const photoInfo = await FileSystem.getInfoAsync(photoUri) as {
+        size: number
+      }
+
+      if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+        return Alert.alert(
+          'Essa imagem é muito grande. Escolha uma imagem menor',
+        )
+      }
+      
+      setUserPhoto(photoUri)
+    }
+    
   }
   return (
     <VStack flex={1}>
@@ -22,7 +46,7 @@ export function Profile() {
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
           <UserPhoto
-            source={{ uri: 'https://gitlab.com/uploads/-/system/user/avatar/26843990/avatar.png' }}
+            source={{ uri: userPhoto }}
             size="xl"
             alt="Imagem do usuário"
           />
