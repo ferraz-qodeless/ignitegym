@@ -8,12 +8,27 @@ import Logo from '@assets/logo.svg';
 
 import { Button } from "@components/Button";
 import { Input } from "@components/Input";
+import { Controller, useForm } from "react-hook-form";
+
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
 
 export function SignUp() {
+
+  const { control, handleSubmit, formState: {errors}} = useForm<FormDataProps>();
+
   const { navigate } = useNavigation<AuthNavigatorRoutesProps>();
   
   function handleNavigateToSignIn() {
     navigate('signIn')
+  }
+
+  function handleSignUp({ name, email, password, passwordConfirm }: FormDataProps ) {
+    console.log({name, email, password, passwordConfirm})
   }
 
   return (
@@ -41,10 +56,73 @@ export function SignUp() {
             <Heading color="$gray100" textAlign="center">
               Crie sua conta
             </Heading>
-            <Input placeholder="Nome" autoCapitalize="none"/>
-            <Input placeholder="E-mail" keyboardType="email-address" autoCapitalize="none"/>
-            <Input placeholder="Senha" secureTextEntry/>
-            <Button title="Criar e acessar"/>
+
+            <Controller
+              control={control}
+              name="name"
+              rules={{ 
+                required: 'Informe seu nome' 
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Input 
+                  placeholder="Nome"
+                  autoCapitalize="none"
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+            {errors.name?.message && (
+              <Text 
+                color="$gray100"
+              >
+                {errors.name.message}
+              </Text>
+            )}
+
+            <Controller
+              control={control}
+              name="email"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="E-mail"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="password"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Senha"
+                  secureTextEntry
+                  onChangeText={onChange}
+                  value={value}
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="passwordConfirm"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Confirmar senha"
+                  secureTextEntry
+                  onChangeText={onChange}
+                  value={value}
+                  onSubmitEditing={handleSubmit(handleSignUp)}
+                  returnKeyType="send"
+                />
+              )}
+            />
+            
+            <Button title="Criar e acessar" onPress={handleSubmit(handleSignUp)}/>
           </Center>
           <Button title="Voltar para login" variant="outline" mt={"$12"} onPress={handleNavigateToSignIn}/>
         </VStack>
