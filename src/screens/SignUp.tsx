@@ -4,9 +4,9 @@ import {
   Image,
   ScrollView,
   Text,
+  useToast,
   VStack,
 } from '@gluestack-ui/themed'
-
 
 import { useNavigation } from '@react-navigation/native'
 import { Controller, useForm } from 'react-hook-form'
@@ -19,6 +19,10 @@ import { Input } from '@components/Input'
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
+
+import { ToastMessage } from '@components/ToastMessage'
+import { api } from '@services/api'
+import { AppError } from '@utils/AppError'
 
 type FormDataProps = {
   name: string
@@ -36,9 +40,7 @@ const signUpSchema = yup.object({
   password: yup
     .string()
     .required('Informe a senha')
-    .min(6, 'A senha deve ter pelo menos 6 dígitos')
-    .matches(/[A-Z]/, 'A senha deve ter pelo menos 1 letra maiúscula')
-    .matches(/[!@#$%^&*(),.?":{}|<>]/, 'A senha deve ter pelo menos 1 caractere especial'),
+    .min(6, 'A senha deve ter pelo menos 6 dígitos'),
   password_confirm: yup
     .string()
     .required('Confirme a senha')
@@ -46,6 +48,8 @@ const signUpSchema = yup.object({
 })
 
 export function SignUp() {
+  const toast = useToast()
+
   const {control, handleSubmit, formState: { errors }, } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchema)
   })
@@ -56,13 +60,26 @@ export function SignUp() {
     navigation.goBack()
   }
 
-  function handleSignUp({
-    name,
-    email,
-    password,
-    password_confirm,
-  }: FormDataProps) {
-    console.log({ name, email, password, password_confirm })
+  async function handleSignUp({ name, email, password }: FormDataProps) {
+    try {
+      const response = await api.post('/users', { name, email, password });
+      console.log(response.data);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde';
+      toast.show({
+        placement: 'top',
+        render: ({id}) => (
+          <ToastMessage 
+            id={id}
+            title="Erro ao cadastrar usuário."
+            description={title}
+            action="error" 
+            onClose={() => toast.close(id)}
+          />
+        )
+      })
+    }
   }
 
   return (
