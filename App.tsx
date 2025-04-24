@@ -8,6 +8,7 @@ import { StatusBar } from 'react-native';
 
 import { Loading } from '@components/Loading';
 
+import { AuthContexProvider } from '@contexts/AuthContext';
 import { Routes } from '@routes/index';
 import { config } from './config/gluestack-ui.config';
 
@@ -23,8 +24,9 @@ export function App() {
         backgroundColor={'transparent'}
         translucent
       />
-      {fontsLoaded ? <Routes /> : <Loading />
-    }
+      <AuthContexProvider>
+        {fontsLoaded ? <Routes /> : <Loading />}
+      </AuthContexProvider>
     </GluestackUIProvider>
   );
 }
