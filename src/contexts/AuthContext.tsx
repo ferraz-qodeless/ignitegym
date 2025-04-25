@@ -1,27 +1,36 @@
-import { UserDTO } from "@dtos/UserDTO";
-import { createContext, ReactNode } from "react";
+import { createContext, ReactNode, useState } from "react";
 
-export type AuthConteDataProps = {
+import { UserDTO } from "@dtos/UserDTO";
+
+export type AuthContextDataProps = {
   user: UserDTO;
+  signIn: (email: string, password: string) => void
 }
 
-type AuthContexProviderProps = {
+type AuthContextProviderProps = {
   children: ReactNode
 }
 
-export const AuthContext = createContext<AuthConteDataProps>({} as AuthConteDataProps);
+export const AuthContext = createContext<AuthContextDataProps>({} as AuthContextDataProps);
 
-export function AuthContexProvider({ children }: AuthContexProviderProps) {
+export function AuthContextProvider({ children }: AuthContextProviderProps)  {
+  const [user, setUser] = useState({
+    id: '1',
+    name: 'Renato Ferraz',
+    email: 'renato.ferraz@qodeless.io',
+    avatar: 'https://github.com/devops-ferraz.png'
+  })
+  function signIn(email: string, password: string) {
+    setUser({
+      id: '',
+      name: '',
+      email,
+      avatar: ''
+    })
+  }
   return (
-      <AuthContext.Provider value={{ 
-        user: {
-          id: '1',
-          name: 'Lucas',
-          email: 'Wl0yO@example.com',
-          avatar: 'https://github.com/lucasrgtic.png'
-        }
-      }}>
-        {children}
-      </AuthContext.Provider>
-  );
+    <AuthContext.Provider value={{ user, signIn }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
