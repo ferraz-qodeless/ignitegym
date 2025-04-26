@@ -3,6 +3,7 @@ import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { Box } from "@gluestack-ui/themed";
 import { useAuth } from "@hooks/useAuth";
 import { gluestackUIConfig } from '../../config/gluestack-ui.config';
+import { AppRoutes } from "./app.routes";
 import { AuthRoutes } from "./auth.routes";
 
 export function Routes() {
@@ -10,12 +11,11 @@ export function Routes() {
   theme.colors.background = gluestackUIConfig.tokens.colors.gray700;
 
   const { user } = useAuth();
-  console.log("USUÁRIO LOGADO...", user);
 
   return (
     <Box flex={1} bg="$gray700">
       <NavigationContainer theme={theme}>
-        <AuthRoutes />
+        {user.id ? <AppRoutes /> : <AuthRoutes />}
       </NavigationContainer>
     </Box>
   );

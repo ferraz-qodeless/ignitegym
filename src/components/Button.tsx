@@ -16,6 +16,7 @@ export function Button({title, variant = "solid", isLoading, ...rest }: Props) {
       borderWidth={variant === "outline" ? "$1" : "$0"}
       borderColor="$green500"
       rounded="$md"
+      opacity={isLoading ? 0.5 : 1}
       disabled={isLoading}
       $active={{
         bg: variant === "outline" ? "$gray500" : "$green500"
