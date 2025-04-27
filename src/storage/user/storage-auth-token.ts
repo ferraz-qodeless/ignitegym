@@ -6,4 +6,10 @@ async function storageAuthTokenSave(token: string) {
   await AsyncStorage.setItem(AUTH_TOKEN_STORAGE, token);
 }
 
-export { storageAuthTokenSave };
+async function storageAuthTokenGet() {
+  const token = await AsyncStorage.getItem(AUTH_TOKEN_STORAGE);
+  return token;
+}
+
+export { storageAuthTokenGet, storageAuthTokenSave };
+
