@@ -52,7 +52,7 @@ export function Profile() {
   const [isUpdating, setIsUpdating] = useState(false)
   const [userPhoto, setUserPhoto] = useState<string>('')
   const toast = useToast()
-  const { user } = useAuth()
+  const { user, updateUserProfile } = useAuth()
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({ 
     defaultValues: { 
       name: user.name,
@@ -113,7 +113,10 @@ export function Profile() {
   async function handleProfileUpdate(data: FormDataProps) {
     try {
       setIsUpdating(true)
+      const userUpdated = user
+      userUpdated.name = data.name
       const userUpdatedResponse = await api.put('/users', data)
+      await updateUserProfile(userUpdated)
       toast.show({
         placement: 'top',
         render: ({id}) => (
