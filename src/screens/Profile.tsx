@@ -6,12 +6,15 @@ import { UserPhoto } from '@components/UserPhoto'
 import { Center, Heading, Text, useToast, VStack } from '@gluestack-ui/themed'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useAuth } from '@hooks/useAuth'
+import { api } from '@services/api'
+import { AppError } from '@utils/AppError'
 import * as FileSystem from 'expo-file-system'
 import * as ImagePicker from 'expo-image-picker'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { ScrollView, TouchableOpacity } from 'react-native'
 import * as yup from 'yup'
+
 
 type FormDataProps = {
   name: string;
@@ -46,6 +49,7 @@ const profileSchema = yup.object({
 })
 
 export function Profile() {
+  const [isUpdating, setIsUpdating] = useState(false)
   const [userPhoto, setUserPhoto] = useState<string>('')
   const toast = useToast()
   const { user } = useAuth()
@@ -107,8 +111,41 @@ export function Profile() {
     }
   }
   async function handleProfileUpdate(data: FormDataProps) {
-    console.log(data);
+    try {
+      setIsUpdating(true)
+      const userUpdatedResponse = await api.put('/users', data)
+      toast.show({
+        placement: 'top',
+        render: ({id}) => (
+          <ToastMessage
+            id={id}
+            title="Perfil atualizado"
+            description="Perfil atualizado com sucesso"
+            action="success"
+            onClose={() => toast.close(id)}
+          />
+        )
+      })
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError ? error.message : 'Nao foi possivel atualizar o perfil. Tente novamente mais tarde.';
+      toast.show({
+        placement: 'top',
+        render: ({id}) => (
+          <ToastMessage
+            id={id}
+            title={title}
+            description="Nao foi possivel atualizar o perfil. Tente novamente mais tarde."
+            action="error"
+            onClose={() => toast.close(id)}
+          />
+        )
+      })
+    } finally {
+      setIsUpdating(false)
+    }
   }
+
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
@@ -216,6 +253,7 @@ export function Profile() {
               title="Atualizar" 
               mt={4} 
               onPress={handleSubmit(handleProfileUpdate)}
+              isLoading={isUpdating}
             />
           </Center>
         </Center>
