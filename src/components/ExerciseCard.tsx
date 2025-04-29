@@ -30,7 +30,7 @@ export function ExerciseCard({ data, ...props }: ExerciseCardProps) {
             {data.name}
           </Heading>
           <Text fontSize="$sm" color="$gray200" mt={"$1"} fontFamily="$body" numberOfLines={2}>
-            3 séries x 12 repetições 
+            {data.series} séries x {data.repetitions} repetições 
           </Text>
         </VStack>
         <Icon as={ChevronRight} color="$gray300" size={"lg"} />
