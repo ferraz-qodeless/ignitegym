@@ -49,6 +49,7 @@ const profileSchema = yup.object({
 })
 
 export function Profile() {
+  const [isLoading, setIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [userPhoto, setUserPhoto] = useState<string>('')
   const toast = useToast()
@@ -62,54 +63,74 @@ export function Profile() {
   });
 
   async function handleUserPhotoSelect() {
-    const photoSelected = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-      aspect: [4, 4],
-      allowsEditing: true,
-    })
-    
-    if (photoSelected.canceled) {
-      return
-    }
-
-    const photoUri = photoSelected.assets[0].uri
-
-    if (photoUri) {
-      const photoInfo = await FileSystem.getInfoAsync(photoUri) as {
-        size: number
+    setIsLoading(true)
+    try {
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      })
+      if (photoSelected.canceled) {
+        return
       }
+      const photoUri = photoSelected.assets[0].uri
+  
+      if (photoUri) {
+        const photoInfo = await FileSystem.getInfoAsync(photoUri) as {
+          size: number
+        }
+        if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+          return toast.show({
+            placement: 'top',
+            render: ({id}) => (
+              <ToastMessage 
+                id={id}
+                title="Imagem muito grande"
+                description="Escolha uma imagem com no máximo 5MB"
+                action="error" 
+                onClose={() => toast.close(id)}
+              />
+            )
+          })
+        }
+        const fileExtension = photoUri.split('.').pop()
+        const photoFile = {
+          name: `${user.name}.${fileExtension}`.replace(' ', '').toLowerCase(),
+          uri: photoUri,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`
+        } as any
+        const userPhotoUploadForm = new FormData()
+        userPhotoUploadForm.append('avatar', photoFile)
 
-      if (photoInfo.size && photoInfo.size / 1024 / 1024 > 0.001) {
-        return toast.show({
+        const response = await api.patch('/users/avatar', userPhotoUploadForm, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        toast.show({
           placement: 'top',
           render: ({id}) => (
-            <ToastMessage 
+            <ToastMessage
               id={id}
-              title="Imagem muito grande"
-              description="Escolha uma imagem com no máximo 5MB"
-              action="error" 
+              title="Foto atualizada"
+              description="Sua foto foi atualizada com sucesso"
+              action="success"
               onClose={() => toast.close(id)}
             />
           )
         })
+
+        console.log(response.data)
+        setUserPhoto(photoUri)
       }
-      
-      toast.show({
-        placement: 'top',
-        render: ({id}) => (
-          <ToastMessage 
-            id={id}
-            title="Imagem carregada"
-            description="Sua foto foi carregada com sucesso"
-            action="success" 
-            onClose={() => toast.close(id)}
-          />
-        )
-      })
-      setUserPhoto(photoUri)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
+
   async function handleProfileUpdate(data: FormDataProps) {
     try {
       setIsUpdating(true)
