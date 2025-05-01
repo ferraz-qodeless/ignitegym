@@ -1,3 +1,4 @@
+import defaultUserPhotoImg from '@assets/userPhotoDefault.png'
 import { Button } from '@components/Button'
 import { Input } from '@components/Input'
 import { ScreenHeader } from '@components/ScreenHeader'
@@ -51,7 +52,7 @@ const profileSchema = yup.object({
 export function Profile() {
   const [isLoading, setIsLoading] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  const [userPhoto, setUserPhoto] = useState<string>('')
+
   const toast = useToast()
   const { user, updateUserProfile } = useAuth()
   const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({ 
@@ -103,11 +104,15 @@ export function Profile() {
         const userPhotoUploadForm = new FormData()
         userPhotoUploadForm.append('avatar', photoFile)
 
-        const response = await api.patch('/users/avatar', userPhotoUploadForm, {
+        const avatarUpdatedResponse = await api.patch('/users/avatar', userPhotoUploadForm, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
+        const userUpdated = user
+        userUpdated.avatar = avatarUpdatedResponse.data.avatar
+        await updateUserProfile(userUpdated)
+
         toast.show({
           placement: 'top',
           render: ({id}) => (
@@ -120,9 +125,7 @@ export function Profile() {
             />
           )
         })
-
-        console.log(response.data)
-        setUserPhoto(photoUri)
+        console.log(avatarUpdatedResponse.data)
       }
     } catch (error) {
       console.log(error)
@@ -176,7 +179,11 @@ export function Profile() {
       <ScrollView contentContainerStyle={{ paddingBottom: 36 }}>
         <Center mt="$6" px="$10">
           <UserPhoto
-            source={{ uri: userPhoto }}
+            source={
+              user.avatar 
+              ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` } 
+              : defaultUserPhotoImg
+            }
             size="xl"
             alt="Imagem do usuário"
           />
